@@ -91,11 +91,8 @@ def motionDetector(video_cap):
         frame_placeholder.image(frame, channels="RGB")
 
         # Break the loop if the 'q' key is pressed or the user clicks the "Stop" button
-        cv2.waitKey(1)
         if stop_button:
             st.stop()
-    video_cap.release()
-    # cv2.destroyAllWindows()
 
 def main():
     st.title('Motion Detection using Streamlit')
