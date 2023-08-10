@@ -98,7 +98,7 @@ def motionDetector(video_cap):
 
         # Display the frame using Streamlit's st.image
         frame_placeholder.image(frame, channels="BGR")
-        st.text("Processed video saved..!")
+    st.text("Processed video saved..!")
 
         # Break the loop if the 'q' key is pressed or the user clicks the "Stop" button
 
