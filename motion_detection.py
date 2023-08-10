@@ -99,7 +99,7 @@ def main():
     st.title('Motion Detection using Streamlit')
 
     selected_options = ["None", "Use Webcam", "Upload Video"]
-    vid = None
+    
     selected_option = st.sidebar.selectbox("Choose an Option ", selected_options)
     if selected_option == "Use Webcam":
         vid = cv2.VideoCapture(0)
