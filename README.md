@@ -23,18 +23,17 @@ To access the motion detector, run the following command:
 ```bash
 streamlit run ./motion_detection.py
 ```
-![image](https://github.com/MrYahya18/motion_deteection_opencv_streamlit/assets/88489038/246d5538-46e4-4538-8efc-faf9cefbe864)
-
+![Capture](https://github.com/MrYahya18/motion_deteection_opencv_streamlit/assets/88489038/ed0b45f1-890f-4a4f-acc2-0f91ac717fd2)
 
 ## Working Process
 
 Here's an overview of the working process of the code:
 
-1. The script takes the path of a folder containing .mp4 videos, e.g., `videos_folder/1.mp4`, `videos_folder/2.mp4`, etc.
-2. Define the name of the videos in the selection box.
-3. The selected video is initialized with OpenCV.
+1. Choose Option from Setting e.g. Webcamm video to upload 
+2. Cick Start button to initialize motion detector. 
 4. Preprocess frames using background subtractor and foreground masking to create a reference model of the previous image.
 5. If some pixel intensity value changes above the threshold, it obtains contours of the motion.
 6. Draws a bounding box and writes a text banner on the frame alerting motion detected.
-
+7. Processed Video saved in Output Directory
+8. Can also click Stop button to stop video
 Please note that this README provides an overview of the motion detection script. For more details, refer to the code in the repository.
