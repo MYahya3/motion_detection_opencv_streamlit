@@ -94,8 +94,8 @@ def motionDetector(video_cap):
         cv2.waitKey(1)
         if stop_button:
             st.stop()
-    cv2.release()
-    cv2.destroyAllWindows()
+    video_cap.release()
+    # cv2.destroyAllWindows()
 
 def main():
     st.title('Motion Detection using Streamlit')
