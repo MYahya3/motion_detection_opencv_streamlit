@@ -94,7 +94,7 @@ def motionDetector(video_cap):
         cv2.waitKey(1)
         if stop_button:
             st.stop()
-    cv2.releaseall()
+    cv2.release()
     cv2.destroyAllWindows()
 
 def main():
