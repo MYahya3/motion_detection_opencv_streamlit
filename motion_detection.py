@@ -1,5 +1,4 @@
 import os.path
-
 import numpy as np
 import cv2
 import streamlit as st
@@ -95,27 +94,25 @@ def motionDetector(video_cap):
                     cv2.rectangle(frame, (x1, y1), (x2, y2), yellow, thickness=2)
                     drawBannerText(frame, 'Motion Detected', text_color=red)
 
-
-        # Convert the frame from BGR to RGB format
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-        # Display the frame using Streamlit's st.image
-        frame_placeholder.image(frame, channels="RGB")
         out.write(frame)
 
+        # Display the frame using Streamlit's st.image
+        frame_placeholder.image(frame, channels="BGR")
+        st.text("Processed video saved..!")
+
         # Break the loop if the 'q' key is pressed or the user clicks the "Stop" button
-        if stop_button:
-            st.stop()
+
     video_cap.release()
     out.release()
 def main():
-    st.title('Motion Detection using Streamlit')
-    selected_options = ["None", "Webcam", "Recorded Video"]
+
+    st.title('Motion Detection with Opencv')
+    selected_options = ["None", "Webcam", "Video"]
 
     selected_option = st.sidebar.selectbox("Choose an Option ", selected_options)
-    if selected_option == "Use Webcam":
+    if selected_option == "Webcam":
         vid = cv2.VideoCapture(0)
-    elif selected_option == "Upload Video":
+    elif selected_option == "Video":
         video_file_buffer = st.sidebar.file_uploader("Upload a video", type=["mp4", "mov", 'avi', 'asf', 'm4v'],
                                                      accept_multiple_files=True)
         tfflie = tempfile.NamedTemporaryFile(delete=False)
