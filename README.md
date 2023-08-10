@@ -29,11 +29,11 @@ streamlit run ./motion_detection.py
 
 Here's an overview of the working process of the code:
 
-1. Choose Option from Setting e.g. Webcamm video to upload 
-2. Cick Start button to initialize motion detector. 
+1. Choose an Option from the sidebar e.g. Webcam or video to upload 
+2. Click the start button to initialize the motion detector. 
 4. Preprocess frames using background subtractor and foreground masking to create a reference model of the previous image.
 5. If some pixel intensity value changes above the threshold, it obtains contours of the motion.
-6. Draws a bounding box and writes a text banner on the frame alerting motion detected.
+6. Draws a bounding box and write a text banner on the frame alerting motion detected.
 7. Processed Video saved in Output Directory
-8. Can also click Stop button to stop video
+8. Can also click the Stop button to stop the video
 Please note that this README provides an overview of the motion detection script. For more details, refer to the code in the repository.
