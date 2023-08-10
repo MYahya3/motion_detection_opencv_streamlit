@@ -91,8 +91,9 @@ def motionDetector(video_cap):
         frame_placeholder.image(frame, channels="RGB")
 
         # Break the loop if the 'q' key is pressed or the user clicks the "Stop" button
-        if cv2.waitKey(1) & 0xFF == ord("q") or stop_button:
-            break
+        cv2.waitKey(1)
+        if stop_button:
+            st.stop()
     cv2.releaseall()
     cv2.destroyAllWindows()
 
