@@ -1,8 +1,7 @@
 import numpy as np
 import cv2
 import streamlit as st
-import os
-import glob
+import tempfile
 
 # To draw banner and write text on it.
 def drawBannerText(frame, text, banner_height_percent = 0.08, font_scale = 0.8, text_color = (0, 255, 0),
@@ -19,20 +18,16 @@ def drawBannerText(frame, text, banner_height_percent = 0.08, font_scale = 0.8, 
                 font_thickness, cv2.LINE_AA)
 
 
-def motionDetector(source_video):
+def motionDetector(video_cap):
 
     frame_placeholder = st.empty()
-    # Add a "Stop" button and store its state in a variable
-    col1, col2 = st.columns(2)
-    with col1:
-        start_button = st.button('Start')
-    with col2:
-        stop_button = st.button('Stop')
+    stop_button = st.sidebar.button('Stop Processing')
 
-    # Initiate Video Feed
-    video_cap = cv2.VideoCapture(source_video)
+    if stop_button:
+        st.stop()
+
     if not video_cap.isOpened():
-        print('Unable to open: ' + source_video)
+        print('Unable to open video')
     # Get video frame width, height and fps
     frame_w = int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_h = int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -54,7 +49,7 @@ def motionDetector(source_video):
     bg_sub = cv2.createBackgroundSubtractorKNN(history=1500)
 
                                 ### Process video frames ###
-    while True and start_button:
+    while True:
         ret, frame = video_cap.read()
         frame_count += 1
         if frame is None:
@@ -99,34 +94,36 @@ def motionDetector(source_video):
         if cv2.waitKey(1) & 0xFF == ord("q") or stop_button:
             break
 
-    video_cap.release()
-    cv2.destroyAllWindows()
-
 
 def main():
-    # Set the title for the Streamlit app
-    st.title("Motion Detection with Opencv")
-    # Define Streamlit Sidebas title
-    st.sidebar.title("Settings")
-    # Path from which fetch videos
-    path = st.sidebar.text_input(f"Define Folder Path")
-    # Define Videos selection box
-    video_files = [os.path.basename(file) for file in glob.glob(path + "/*.mp4")]
-    if not video_files:
-        st.markdown("""
-        Steps to use Motion Detector:
-        - Click on top left  ***>*** icon to go in Settings
-        - Define Folder path having mp4 video files e.g. D:/videos_folder
-        - Choose video from selection box
-        - Click Start/Stop Button to play/stop video
-        """)
+    st.title('Motion Detection using Streamlit')
+
+    selected_options = ["None", "Use Webcam", "Upload Video"]
+    vid = None
+    selected_option = st.sidebar.selectbox("Choose an Option ", selected_options)
+    if selected_option == "Use Webcam":
+        vid = cv2.VideoCapture(0)
+    elif selected_option == "Upload Video":
+        video_file_buffer = st.sidebar.file_uploader("Upload a video", type=["mp4", "mov", 'avi', 'asf', 'm4v'],
+                                                     accept_multiple_files=True)
+        tfflie = tempfile.NamedTemporaryFile(delete=False)
+        print(video_file_buffer)
+        if video_file_buffer:
+            video_files = [file.name for file in video_file_buffer]
+            video_files  = list(dict.fromkeys(video_files))
+            video_choose = st.selectbox("Choose the Video ", video_files)
+            temp_vid_index = video_files.index(video_choose)
+            tfflie.write(video_file_buffer[temp_vid_index].read())
+            vid = cv2.VideoCapture(tfflie.name)
     else:
-        selected_video = st.sidebar.selectbox("Choose a video to play", ["None"] + video_files)
-        if selected_video != 'None':
-            video = os.path.join(path + "/" + selected_video)
-            motionDetector(video)
-        else:
-            st.warning("Please choose a valid video from the list.")
+        st.warning("Please choose a valid video from the list.")
+        st.stop()
+
+    start = st.sidebar.button("Start")
+    if start and vid != "None":
+        motionDetector(vid)
+    else:
+        pass
 
 if __name__ == "__main__":
     main()
