@@ -93,13 +93,14 @@ def motionDetector(video_cap):
         # Break the loop if the 'q' key is pressed or the user clicks the "Stop" button
         if cv2.waitKey(1) & 0xFF == ord("q") or stop_button:
             break
-
+    cv2.releaseall()
+    cv2.destroyAllWindows()
 
 def main():
     st.title('Motion Detection using Streamlit')
 
     selected_options = ["None", "Use Webcam", "Upload Video"]
-    
+
     selected_option = st.sidebar.selectbox("Choose an Option ", selected_options)
     if selected_option == "Use Webcam":
         vid = cv2.VideoCapture(0)
@@ -120,7 +121,7 @@ def main():
         st.stop()
 
     start = st.sidebar.button("Start")
-    if start and vid != "None":
+    if start:
         motionDetector(vid)
     else:
         pass
