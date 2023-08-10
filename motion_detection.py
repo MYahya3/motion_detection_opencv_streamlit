@@ -1,3 +1,5 @@
+import os.path
+
 import numpy as np
 import cv2
 import streamlit as st
@@ -17,22 +19,30 @@ def drawBannerText(frame, text, banner_height_percent = 0.08, font_scale = 0.8, 
     cv2.putText(frame, text, location, cv2.FONT_HERSHEY_SIMPLEX, font_scale, text_color,
                 font_thickness, cv2.LINE_AA)
 
-
 def motionDetector(video_cap):
 
-    frame_placeholder = st.empty()
     stop_button = st.sidebar.button('Stop Processing')
-
+    # if stop button pressed video stopped
     if stop_button:
         st.stop()
 
+    frame_placeholder = st.empty()
+
     if not video_cap.isOpened():
         print('Unable to open video')
+
     # Get video frame width, height and fps
     frame_w = int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_h = int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
+    fps = int(video_cap.get(cv2.CAP_PROP_FPS))
     frame_area = frame_w * frame_h
+
+    # Output Directory and write output File
+    output_dir = "Demo_videos_output"
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    out_vid = os.path.join(output_dir + "/demo_output.mp4")
+    out = cv2.VideoWriter(out_vid, cv2.VideoWriter.fourcc(*'.mp4'), fps, (frame_w, frame_h))
 
     # Parameters
     ksize = (3, 3)        # Kernel size for erosion.
@@ -85,19 +95,22 @@ def motionDetector(video_cap):
                     cv2.rectangle(frame, (x1, y1), (x2, y2), yellow, thickness=2)
                     drawBannerText(frame, 'Motion Detected', text_color=red)
 
+
         # Convert the frame from BGR to RGB format
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
         # Display the frame using Streamlit's st.image
         frame_placeholder.image(frame, channels="RGB")
+        out.write(frame)
 
         # Break the loop if the 'q' key is pressed or the user clicks the "Stop" button
         if stop_button:
             st.stop()
-
+    video_cap.release()
+    out.release()
 def main():
     st.title('Motion Detection using Streamlit')
-
-    selected_options = ["None", "Use Webcam", "Upload Video"]
+    selected_options = ["None", "Webcam", "Recorded Video"]
 
     selected_option = st.sidebar.selectbox("Choose an Option ", selected_options)
     if selected_option == "Use Webcam":
@@ -115,7 +128,7 @@ def main():
             tfflie.write(video_file_buffer[temp_vid_index].read())
             vid = cv2.VideoCapture(tfflie.name)
     else:
-        st.warning("Please choose a valid video from the list.")
+        st.warning("Please choose a valid option from Setting.")
         st.stop()
 
     start = st.sidebar.button("Start")
@@ -123,6 +136,5 @@ def main():
         motionDetector(vid)
     else:
         pass
-
 if __name__ == "__main__":
     main()
